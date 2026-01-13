@@ -380,7 +380,7 @@
 
       <div style="margin-top:10px; display:flex; gap:10px;">
         <button id="testLogoBtn" style="background-color:#6c757d;">
-          <i class="fas fa-image"></i> Afficher logo CARADEL
+          <i class="fas fa-image"></i> Afficher logo CARADEL (PNG)
         </button>
         <button id="removeLogoBtn" style="background-color:#dc3545;">
           <i class="fas fa-times"></i> Cacher le logo
@@ -424,7 +424,7 @@
       </div>
     </div>
 
-    <!-- ✅ NOUVEAU : Temps de travail -->
+    <!-- Temps de travail -->
     <div class="form-group">
       <label for="workingTime">Temps de travail *</label>
       <input
@@ -510,7 +510,6 @@
           du <span id="displayStartDate">01 mars 2020</span> au <span id="displayEndDate">31 mai 2025</span>.
         </div>
 
-        <!-- ✅ NOUVEAU : Temps de travail affiché dans l'attestation -->
         <div class="info-line">
           travaillait à raison de <strong><span id="displayWorkingTime">huit (08) heures par jour, soit quarante (40) heures par semaine</span></strong>,
           conformément à la réglementation en vigueur.
@@ -573,8 +572,6 @@
       const startDateInput = document.getElementById('startDate');
       const endDateInput = document.getElementById('endDate');
       const missionsInput = document.getElementById('missions');
-
-      // ✅ NOUVEAU : temps de travail
       const workingTimeInput = document.getElementById('workingTime');
 
       // Logo elements
@@ -584,26 +581,18 @@
       const removeLogoBtn = document.getElementById('removeLogoBtn');
       const printBtn = document.getElementById('printBtn');
 
-      // SVG default
-      const defaultLogoSVG = `
-        <svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300">
-          <rect width="300" height="300" fill="#0d3b66" opacity="0.08"/>
-          <circle cx="150" cy="150" r="120" fill="#2a9d8f" opacity="0.1"/>
-          <text x="150" y="130" text-anchor="middle" font-size="42" fill="#0d3b66"
-                font-family="Arial, sans-serif" font-weight="bold">CARADEL</text>
-          <text x="150" y="180" text-anchor="middle" font-size="36" fill="#2a9d8f"
-                font-family="Arial, sans-serif" font-weight="bold">SARL</text>
-          <text x="150" y="230" text-anchor="middle" font-size="20" fill="#666"
-                font-family="Arial, sans-serif">Entreprise de Services</text>
-        </svg>
-      `;
+      // ✅ LOGO PNG PAR DÉFAUT (dans le même dossier que ce fichier HTML)
+      const defaultLogoPNG = "caradel-logo.png";
 
       // --- LOGO PRINT SAFE ---
       let printableLogoDataUrl = null;
 
-      function svgToDataUrl(svg) {
-        const cleaned = svg.replace(/\s+/g, ' ').trim();
-        return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(cleaned);
+      function setLogoFromUrl(url) {
+        // Affichage écran
+        centerLogo.innerHTML = `<img src="${url}" alt="Logo CARADEL" style="width:300px;height:300px;object-fit:contain;">`;
+        centerLogo.style.display = "block";
+        // Pour l'impression, on garde l'URL (fonctionne si le fichier est accessible)
+        printableLogoDataUrl = url;
       }
 
       function setLogoFromDataUrl(dataUrl) {
@@ -612,19 +601,13 @@
         printableLogoDataUrl = dataUrl;
       }
 
-      function setLogoFromInlineSVG(svg) {
-        centerLogo.innerHTML = svg; // écran
-        centerLogo.style.display = 'block';
-        printableLogoDataUrl = svgToDataUrl(svg); // impression
-      }
-
       function hideLogo() {
         centerLogo.style.display = 'none';
         printableLogoDataUrl = null;
         logoFileInput.value = '';
       }
 
-      // Upload logo
+      // Upload logo (DataURL = top fiabilité)
       logoFileInput.addEventListener('change', function(e) {
         const file = e.target.files && e.target.files[0];
         if (!file) return;
@@ -637,10 +620,10 @@
         reader.readAsDataURL(file);
       });
 
-      // Show default logo
+      // Show default PNG logo button
       testLogoBtn.addEventListener('click', function() {
-        setLogoFromInlineSVG(defaultLogoSVG);
-        alert("✅ Logo CARADEL affiché ! Visible à l'écran et dans le PDF.");
+        setLogoFromUrl(defaultLogoPNG);
+        alert("✅ Logo CARADEL (caradel-logo.png) affiché ! Visible à l'écran et dans le PDF.");
       });
 
       // Hide logo
@@ -674,7 +657,7 @@
         centerLogo.style.backgroundPosition = "";
         centerLogo.style.backgroundSize = "";
 
-        // remettre une image pour l'écran (stable)
+        // remettre une image pour l'écran
         centerLogo.innerHTML = `<img src="${printableLogoDataUrl}" alt="Logo" style="width:300px;height:300px;object-fit:contain;">`;
       }
 
@@ -697,7 +680,7 @@
         document.getElementById('displayStartDate').textContent = startDateInput.value || '01 mars 2020';
         document.getElementById('displayEndDate').textContent = endDateInput.value || '31 mai 2025';
 
-        // ✅ Temps de travail
+        // Temps de travail
         document.getElementById('displayWorkingTime').textContent =
           workingTimeInput.value || 'huit (08) heures par jour, soit quarante (40) heures par semaine';
 
@@ -734,8 +717,6 @@
       });
       genreInput.addEventListener('change', updateDocument);
       missionsInput.addEventListener('input', updateDocument);
-
-      // ✅ Live update temps de travail
       workingTimeInput.addEventListener('input', updateDocument);
 
       // Buttons
@@ -763,10 +744,10 @@
 • Respect des normes de sécurité et de qualité`;
 
         logoFileInput.value = '';
-        setLogoFromInlineSVG(defaultLogoSVG);
+        setLogoFromUrl(defaultLogoPNG);
 
         updateDocument();
-        alert('✅ Formulaire réinitialisé ! Logo CARADEL restauré.');
+        alert('✅ Formulaire réinitialisé ! Logo CARADEL (PNG) restauré.');
       });
 
       // Print / PDF
@@ -776,19 +757,28 @@
           return;
         }
 
-        // Forcer visible avant impression
         if (printableLogoDataUrl) {
           centerLogo.style.display = "block";
           centerLogo.style.visibility = "visible";
         }
 
-        // petit délai
         setTimeout(() => window.print(), 150);
       });
 
       // Init
       updateDocument();
-      setLogoFromInlineSVG(defaultLogoSVG);
+
+      // ✅ Charger automatiquement le PNG par défaut au démarrage
+      setLogoFromUrl(defaultLogoPNG);
+
+      // ✅ Bonus : si le PNG n'existe pas, on garde juste l'écran sans planter
+      // (optionnel, mais utile en dev local)
+      const imgTest = new Image();
+      imgTest.onload = () => {};
+      imgTest.onerror = () => {
+        console.warn("⚠️ caradel-logo.png introuvable. Mets le fichier dans le même dossier que ce HTML.");
+      };
+      imgTest.src = defaultLogoPNG;
     });
   </script>
 </body>
