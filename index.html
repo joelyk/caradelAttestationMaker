@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Générateur d'Attestation - CARADEL SARL</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Times New Roman', serif; }
+        body { background-color: #f5f5f5; color: #000; line-height: 1.4; padding: 15px; max-width: 900px; margin: 0 auto; font-size: 13px; }
+        .full-page-watermark {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; opacity: 0.08;
+        }
+        .watermark-text-style {
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="200"><text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle" font-family="Arial" font-size="60" fill="%230d3b66" opacity="0.3" transform="rotate(-45 200 100)">CARADEL SARL</text></svg>');
+            background-repeat: repeat;
+        }
+        .letterhead { text-align: center; border-bottom: 2px solid #0d3b66; padding-bottom: 10px; margin-bottom: 20px; position: relative; z-index: 10; background-color: white; padding-top: 10px; }
+        .company-name { font-size: 20px; font-weight: bold; color: #0d3b66; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 3px; }
+        .company-tagline { font-size: 11px; font-style: italic; color: #666; margin-bottom: 8px; }
+        .company-details { font-size: 10px; color: #333; display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin-top: 5px; }
+        .document-container { background-color: white; padding: 30px; margin-bottom: 20px; box-shadow: 0 0 10px rgba(0,0,0,0.1); position: relative; z-index: 10; min-height: 280mm; }
+        .content { font-size: 13px; text-align: justify; margin-bottom: 15px; position: relative; z-index: 10; }
+        .attestation-title { text-align: center; font-size: 15px; font-weight: bold; text-transform: uppercase; margin-bottom: 25px; text-decoration: underline; position: relative; z-index: 10; }
+        .section { margin-bottom: 12px; position: relative; z-index: 10; }
+        .employee-info { margin: 15px 0; padding: 12px; background-color: rgba(249,249,249,0.95); border-left: 3px solid #0d3b66; position: relative; z-index: 10; }
+        .info-line { margin-bottom: 4px; }
+        .mission-list { margin: 12px 0 15px 20px; position: relative; z-index: 10; }
+        .mission-list li { margin-bottom: 5px; text-align: justify; }
+        .signature-section { margin-top: 40px; text-align: right; position: relative; z-index: 10; }
+        .signature-line { display: inline-block; width: 220px; border-bottom: 1px solid #000; margin-bottom: 4px; }
+        .date-place { margin-top: 25px; text-align: right; font-style: italic; position: relative; z-index: 10; }
+        .stamp { position: absolute; bottom: 70px; left: 30px; width: 90px; height: 90px; border: 2px dashed #0d3b66; border-radius: 50%; display: flex; align-items: center; justify-content: center; opacity: 0.8; transform: rotate(-15deg); z-index: 10; background-color: white; }
+        .stamp-text { text-align: center; font-weight: bold; color: #0d3b66; font-size: 10px; text-transform: uppercase; padding: 4px; }
+        .controls { background-color: #fff; padding: 15px; border-radius: 6px; margin-bottom: 20px; box-shadow: 0 3px 8px rgba(0,0,0,0.08); position: relative; z-index: 1000; border: 1px solid #ddd; }
+        .logo-control { background-color: #f8f9fa; padding: 12px; border-radius: 4px; margin-bottom: 15px; border-left: 3px solid #0d3b66; }
+        .form-row { display: flex; gap: 10px; margin-bottom: 12px; }
+        .form-col { flex: 1; }
+        .form-group { margin-bottom: 10px; }
+        label { display: block; margin-bottom: 4px; font-weight: bold; color: #0d3b66; font-size: 12px; }
+        input, select, textarea { width: 100%; padding: 7px; border: 1px solid #ddd; border-radius: 3px; font-size: 12px; font-family: inherit; }
+        textarea { min-height: 70px; resize: vertical; }
+        .button-group { display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
+        button { padding: 8px 16px; border: none; border-radius: 3px; font-size: 12px; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all 0.3s ease; flex: 1; }
+        .print-btn { background-color: #0d3b66; color: white; }
+        .print-btn:hover { background-color: #0a2d4d; }
+        .reset-btn { background-color: #666; color: white; }
+        .reset-btn:hover { background-color: #555; }
+        .generate-btn { background-color: #2a9d8f; color: white; }
+        .generate-btn:hover { background-color: #24897c; }
+        .footer { text-align: center; margin-top: 15px; padding-top: 12px; border-top: 1px solid #ddd; color: #666; font-size: 10px; position: relative; z-index: 1000; }
+        .mission-example { font-size: 10px; color: #666; margin-top: 4px; font-style: italic; }
+        .logo-info { font-size: 11px; color: #666; margin-top: 8px; font-style: italic; }
+        @media print {
+            body { background-color: white; padding: 0; font-size: 12px; margin: 0; }
+            .controls, .footer, button, .full-page-watermark { display: none; }
+            .document-container { box-shadow: none; padding: 25px; min-height: auto; margin: 0; border: none; width: 100%; height: auto; }
+            .letterhead { border-bottom: 2px solid #000; margin-bottom: 15px; padding-bottom: 8px; padding-top: 0; }
+            .document-container::before {
+                content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; opacity: 0.08;
+                background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="300" height="150"><text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle" font-family="Arial" font-size="50" fill="%230d3b66" opacity="0.05" transform="rotate(-45 150 75)">CARADEL SARL</text></svg>');
+                background-repeat: repeat;
+            }
+            .employee-info { background-color: rgba(249,249,249,0.98); }
+            .stamp { bottom: 60px; left: 25px; }
+        }
+        @media (max-width: 768px) {
+            body { padding: 10px; }
+            .document-container { padding: 20px; }
+            .form-row { flex-direction: column; gap: 0; }
+            .button-group { flex-direction: column; }
+            button { width: 100%; justify-content: center; }
+            .stamp { position: relative; bottom: auto; left: auto; margin: 20px auto; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Zone du filigrane, contrôlée par JavaScript -->
+    <div class="full-page-watermark" id="watermarkContainer"></div>
+    
+    <div class="controls">
+        <h3><i class="fas fa-edit"></i> Personnaliser l'attestation</h3>
+        
+        <!-- SECTION POUR CHOISIR LE FILIGRANE -->
+        <div class="logo-control">
+            <label for="watermarkType">Choisir le type de filigrane</label>
+            <select id="watermarkType">
+                <option value="text">Texte "CARADEL SARL" (par défaut)</option>
+                <option value="custom">Logo personnalisé (télécharger)</option>
+                <option value="none">Aucun filigrane</option>
+            </select>
+            <div id="customLogoUpload" style="display: none; margin-top: 10px;">
+                <input type="file" id="logoFileInput" accept="image/*">
+                <p class="logo-info">Téléchargez votre logo. Il sera affiché en filigrane.</p>
+            </div>
+        </div>
+        
+        <div class="form-row">
+            <div class="form-col">
+                <div class="form-group">
+                    <label for="employeeName">Nom et prénom du salarié *</label>
+                    <input type="text" id="employeeName" value="NTOUOHOU MAXIME GÉRARD" required>
+                </div>
+                <div class="form-group">
+                    <label for="birthDate">Date de naissance *</label>
+                    <input type="text" id="birthDate" value="23/02/1999" required>
+                </div>
+                <div class="form-group">
+                    <label for="poste">Poste occupé *</label>
+                    <input type="text" id="poste" value="PLOMBIER" required>
+                </div>
+            </div>
+            <div class="form-col">
+                <div class="form-group">
+                    <label for="genre">Genre du salarié *</label>
+                    <select id="genre">
+                        <option value="homme">Homme</option>
+                        <option value="femme">Femme</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="startDate">Date de début *</label>
+                    <input type="text" id="startDate" value="01 mars 2020" required>
+                </div>
+                <div class="form-group">
+                    <label for="endDate">Date de fin *</label>
+                    <input type="text" id="endDate" value="31 mai 2025" required>
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label for="missions">Missions (une par ligne, avec • au début)</label>
+            <textarea id="missions" class="missions-input">
+• Installation des systèmes de plomberie
+• Entretien et réparation des réseaux d'eau
+• Détection et réparation des fuites
+• Pose d'équipements sanitaires
+• Respect des normes de sécurité et de qualité</textarea>
+            <div class="mission-example">Exemple: • Mission 1 • Mission 2 (une par ligne)</div>
+        </div>
+        
+        <div class="button-group">
+            <button class="generate-btn" id="generateBtn">
+                <i class="fas fa-file-contract"></i> Générer l'attestation
+            </button>
+            <button class="reset-btn" id="resetBtn">
+                <i class="fas fa-redo"></i> Réinitialiser
+            </button>
+            <button class="print-btn" id="printBtn">
+                <i class="fas fa-print"></i> Imprimer
+            </button>
+        </div>
+    </div>
+    
+    <!-- CONTENU DE L'ATTESTATION -->
+    <div class="document-container" id="documentContainer">
+        <div class="letterhead">
+            <div class="company-name">CARADEL SARL</div>
+            <div class="company-tagline">Une Entreprise au service de tous</div>
+            <div class="company-details">
+                <div>RC/DSC/2022/B/18</div>
+                <div>NIU: M012217028223S</div>
+                <div>Tél: 696 67 15 13</div>
+                <div>Dschang-Cameroun</div>
+                <div>Email: caradel2020@gmail.com</div>
+            </div>
+        </div>
+        
+        <h1 class="attestation-title">ATTESTATION DE TRAVAIL</h1>
+        
+        <div class="content" id="documentContent">
+            <div class="section">
+                <p>Je soussigné, <strong>Monsieur NDONGSON LEKANE Barthelemy</strong>,</p>
+                <p>agissant en qualité de <strong>Directeur</strong>,</p>
+                <p>au sein de l'entreprise <strong>CARADEL SARL</strong>,</p>
+                <p>située à <strong>Dschang, Cameroun</strong>,</p>
+            </div>
+            
+            <div class="section">
+                <p>atteste par la présente que :</p>
+            </div>
+            
+            <div class="employee-info">
+                <div class="info-line" id="salarieLine"><strong><span id="civilite">Monsieur</span> <span id="displayName">NTOUOHOU MAXIME GÉRARD</span></strong>,</div>
+                <div class="info-line" id="naissanceLine">né<span id="feminineE"></span> le <span id="displayBirthDate">23/02/1999</span>,</div>
+                <div class="info-line">a été employé<span id="feminineE2"></span> au sein de notre entreprise en qualité de <strong><span id="displayPoste">PLOMBIER</span></strong>,</div>
+                <div class="info-line">du <span id="displayStartDate">01 mars 2020</span> au <span id="displayEndDate">31 mai 2025</span>.</div>
+            </div>
+            
+            <div class="section">
+                <p>Durant cette période, <span id="pronoun">il</span> a assuré notamment les missions suivantes :</p>
+                <ul class="mission-list" id="displayMissions">
+                    <li>Installation des systèmes de plomberie</li>
+                    <li>Entretien et réparation des réseaux d'eau</li>
+                    <li>Détection et réparation des fuites</li>
+                    <li>Pose d'équipements sanitaires</li>
+                    <li>Respect des normes de sécurité et de qualité</li>
+                </ul>
+            </div>
+            
+            <div class="section">
+                <p><span id="civilite2">Monsieur</span> <span id="displayName2">NTOUOHOU MAXIME GÉRARD</span> s'est distingué<span id="feminineE3"></span> par son sérieux, son professionnalisme et la qualité de son travail.</p>
+            </div>
+            
+            <div class="section">
+                <p>La présente attestation est délivrée pour servir et valoir ce que de droit.</p>
+            </div>
+            
+            <div class="date-place">
+                <p>Fait à Dschang, le <span id="currentDate">15 novembre 2023</span></p>
+            </div>
+        </div>
+        
+        <div class="signature-section">
+            <div class="signature-line"></div>
+            <p><strong>Monsieur NDONGSON LEKANE Barthelemy</strong></p>
+            <p><strong>Directeur</strong></p>
+            <p><strong>CARADEL SARL</strong></p>
+        </div>
+        
+        <div class="stamp">
+            <div class="stamp-text">Cachet<br>de<br>l'entreprise</div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <p>CARADEL SARL - RC/DSC/2022/B/18 - NIU: M012217028223S - Tél: 696 67 15 13 - Dschang-Cameroun</p>
+        <p>Générateur d'attestation de travail - Tient sur une seule page A4</p>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialisation de la date
+            const now = new Date();
+            const options = { day: 'numeric', month: 'long', year: 'numeric' };
+            document.getElementById('currentDate').textContent = now.toLocaleDateString('fr-FR', options);
+
+            // Éléments du DOM
+            const employeeNameInput = document.getElementById('employeeName');
+            const birthDateInput = document.getElementById('birthDate');
+            const posteInput = document.getElementById('poste');
+            const genreInput = document.getElementById('genre');
+            const startDateInput = document.getElementById('startDate');
+            const endDateInput = document.getElementById('endDate');
+            const missionsInput = document.getElementById('missions');
+            const watermarkContainer = document.getElementById('watermarkContainer');
+            const watermarkTypeSelect = document.getElementById('watermarkType');
+            const customLogoUploadDiv = document.getElementById('customLogoUpload');
+            const logoFileInput = document.getElementById('logoFileInput');
+
+            // 1. GESTION DU FILIGRANE
+            function updateWatermark() {
+                const type = watermarkTypeSelect.value;
+                watermarkContainer.className = 'full-page-watermark'; // Réinitialise les classes
+
+                if (type === 'text') {
+                    watermarkContainer.classList.add('watermark-text-style');
+                } else if (type === 'custom') {
+                    // Si un logo a été téléchargé, l'utiliser comme arrière-plan
+                    if (window.currentLogoUrl) {
+                        watermarkContainer.style.backgroundImage = `url('${window.currentLogoUrl}')`;
+                        watermarkContainer.style.backgroundRepeat = 'repeat';
+                        watermarkContainer.style.backgroundSize = '400px 400px';
+                    }
+                } else if (type === 'none') {
+                    watermarkContainer.style.backgroundImage = 'none';
+                }
+            }
+
+            // Affiche/Masque le champ de téléchargement de logo
+            watermarkTypeSelect.addEventListener('change', function() {
+                customLogoUploadDiv.style.display = (this.value === 'custom') ? 'block' : 'none';
+                updateWatermark();
+            });
+
+            // Gère le téléchargement d'un logo personnalisé
+            logoFileInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        window.currentLogoUrl = event.target.result; // Stocke l'URL du logo
+                        updateWatermark(); // Met à jour le filigrane
+                        alert('Logo personnalisé chargé en filigrane !');
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // Initialise le filigrane (texte par défaut)
+            updateWatermark();
+
+            // 2. MISE À JOUR DU CONTENU DE L'ATTESTATION
+            function updateDocument() {
+                const genre = genreInput.value;
+                const isFemme = genre === 'femme';
+
+                // Mise à jour du nom
+                document.querySelectorAll('#displayName, #displayName2').forEach(el => {
+                    el.textContent = employeeNameInput.value || 'NTOUOHOU MAXIME GÉRARD';
+                });
+
+                // Mise à jour des dates et poste
+                document.getElementById('displayBirthDate').textContent = birthDateInput.value || '23/02/1999';
+                document.getElementById('displayPoste').textContent = posteInput.value || 'PLOMBIER';
+                document.getElementById('displayStartDate').textContent = startDateInput.value || '01 mars 2020';
+                document.getElementById('displayEndDate').textContent = endDateInput.value || '31 mai 2025';
+
+                // Mise à jour des missions
+                const lines = missionsInput.value.split('\n');
+                let missionsHTML = '';
+                lines.forEach(line => {
+                    let cleanLine = line.trim();
+                    if (cleanLine) {
+                        if (!cleanLine.startsWith('•') && !cleanLine.startsWith('-')) cleanLine = '• ' + cleanLine;
+                        missionsHTML += `<li>${cleanLine.replace(/^[•\-]\s*/, '')}</li>`;
+                    }
+                });
+                document.getElementById('displayMissions').innerHTML = missionsHTML || '<li>Aucune mission spécifiée</li>';
+
+                // Ajustements pour le genre
+                const civilite = isFemme ? 'Madame' : 'Monsieur';
+                const participe = isFemme ? 'e' : '';
+                const pronom = isFemme ? 'elle' : 'il';
+
+                document.getElementById('civilite').textContent = civilite;
+                document.getElementById('civilite2').textContent = civilite;
+                document.getElementById('pronoun').textContent = pronom;
+                document.querySelectorAll('#feminineE, #feminineE2, #feminineE3').forEach(el => el.textContent = participe);
+            }
+
+            // 3. ÉCOUTEURS D'ÉVÉNEMENTS POUR LA MISE À JOUR EN TEMPS RÉEL
+            [employeeNameInput, birthDateInput, posteInput, startDateInput, endDateInput].forEach(input => {
+                input.addEventListener('input', updateDocument);
+            });
+            genreInput.addEventListener('change', updateDocument);
+            missionsInput.addEventListener('input', updateDocument);
+
+            // 4. BOUTONS DE COMMANDE
+            document.getElementById('generateBtn').addEventListener('click', function() {
+                if (!employeeNameInput.value || !birthDateInput.value || !posteInput.value || !startDateInput.value || !endDateInput.value) {
+                    alert('Veuillez remplir tous les champs obligatoires (*)');
+                    return;
+                }
+                updateDocument();
+                alert('Attestation générée avec succès ! Prête à imprimer.');
+            });
+
+            document.getElementById('resetBtn').addEventListener('click', function() {
+                employeeNameInput.value = 'NTOUOHOU MAXIME GÉRARD';
+                birthDateInput.value = '23/02/1999';
+                posteInput.value = 'PLOMBIER';
+                genreInput.value = 'homme';
+                startDateInput.value = '01 mars 2020';
+                endDateInput.value = '31 mai 2025';
+                missionsInput.value = `• Installation des systèmes de plomberie
+• Entretien et réparation des réseaux d'eau
+• Détection et réparation des fuites
+• Pose d'équipements sanitaires
+• Respect des normes de sécurité et de qualité`;
+                watermarkTypeSelect.value = 'text';
+                customLogoUploadDiv.style.display = 'none';
+                logoFileInput.value = '';
+                updateWatermark();
+                updateDocument();
+                alert('Formulaire réinitialisé avec succès !');
+            });
+
+            document.getElementById('printBtn').addEventListener('click', function() {
+                if (!employeeNameInput.value || !birthDateInput.value) {
+                    alert('Veuillez d\'abord générer l\'attestation avec des informations valides');
+                    return;
+                }
+                window.print();
+            });
+
+            // Initialisation
+            updateDocument();
+        });
+    </script>
+</body>
+</html>
