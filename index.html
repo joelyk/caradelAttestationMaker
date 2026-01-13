@@ -375,7 +375,7 @@
     <div class="logo-control">
       <label for="logoFile">🖼️ LOGO CENTRAL DANS L'ATTESTATION</label>
       <input type="file" id="logoFile" accept="image/*">
-      <p class="logo-info"><strong>IMPORTANT :</strong> Le logo sera visible À L'ÉCRAN et DANS LE PDF.</p>
+      <p class="logo-info"><strong>IMPORTANT :</strong> Si tu charges une image, le code essaie automatiquement de rendre le fond transparent.</p>
       <p class="logo-info">Formats acceptés : PNG, JPG, SVG. Taille recommandée : 300x300 pixels.</p>
 
       <div style="margin-top:10px; display:flex; gap:10px;">
@@ -581,17 +581,15 @@
       const removeLogoBtn = document.getElementById('removeLogoBtn');
       const printBtn = document.getElementById('printBtn');
 
-      // ✅ LOGO PNG PAR DÉFAUT (dans le même dossier que ce fichier HTML)
+      // ✅ LOGO PNG PAR DÉFAUT (mets caradel-logo.png dans le même dossier que ce HTML)
       const defaultLogoPNG = "caradel-logo.png";
 
       // --- LOGO PRINT SAFE ---
       let printableLogoDataUrl = null;
 
       function setLogoFromUrl(url) {
-        // Affichage écran
         centerLogo.innerHTML = `<img src="${url}" alt="Logo CARADEL" style="width:300px;height:300px;object-fit:contain;">`;
         centerLogo.style.display = "block";
-        // Pour l'impression, on garde l'URL (fonctionne si le fichier est accessible)
         printableLogoDataUrl = url;
       }
 
@@ -607,15 +605,112 @@
         logoFileInput.value = '';
       }
 
-      // Upload logo (DataURL = top fiabilité)
-      logoFileInput.addEventListener('change', function(e) {
+      /* =========================================================
+         ✅ SUPPRESSION SIMPLE DU FOND (AUTO)
+         - détecte une couleur de fond en moyennant les 4 coins
+         - rend transparents les pixels proches de cette couleur
+         - marche bien pour fond uni (noir/blanc/gris etc.)
+      ========================================================= */
+      function removeBackgroundFromImage(dataUrl, opts = {}) {
+        const {
+          threshold = 45,     // tolérance (augmente si fond pas bien enlevé)
+          softEdge = 25,      // adoucit les bords (anti-crénelage)
+          maxSize = 900       // limite pour perf
+        } = opts;
+
+        return new Promise((resolve, reject) => {
+          const img = new Image();
+          img.onload = () => {
+            // Redimensionner si très grande image (perf)
+            let w = img.width;
+            let h = img.height;
+            if (Math.max(w, h) > maxSize) {
+              const scale = maxSize / Math.max(w, h);
+              w = Math.round(w * scale);
+              h = Math.round(h * scale);
+            }
+
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d', { willReadFrequently: true });
+            canvas.width = w;
+            canvas.height = h;
+            ctx.drawImage(img, 0, 0, w, h);
+
+            const imageData = ctx.getImageData(0, 0, w, h);
+            const data = imageData.data;
+
+            // Moyenne des 4 coins (couleur de fond estimée)
+            function getPixel(x, y) {
+              const i = (y * w + x) * 4;
+              return [data[i], data[i+1], data[i+2], data[i+3]];
+            }
+
+            const corners = [
+              getPixel(0, 0),
+              getPixel(w - 1, 0),
+              getPixel(0, h - 1),
+              getPixel(w - 1, h - 1)
+            ];
+
+            const bg = corners.reduce((acc, p) => {
+              acc[0] += p[0]; acc[1] += p[1]; acc[2] += p[2];
+              return acc;
+            }, [0,0,0]).map(v => v / corners.length);
+
+            const [bgR, bgG, bgB] = bg;
+
+            // Enlever le fond
+            for (let i = 0; i < data.length; i += 4) {
+              const r = data[i], g = data[i+1], b = data[i+2];
+              const dr = r - bgR, dg = g - bgG, db = b - bgB;
+              const dist = Math.sqrt(dr*dr + dg*dg + db*db);
+
+              if (dist <= threshold) {
+                // Transparent complet
+                data[i+3] = 0;
+              } else if (dist <= threshold + softEdge) {
+                // Dégradé pour bord plus propre
+                const t = (dist - threshold) / softEdge; // 0..1
+                data[i+3] = Math.round(255 * t);
+              }
+            }
+
+            ctx.putImageData(imageData, 0, 0);
+
+            // Toujours sortir en PNG (garde transparence)
+            resolve(canvas.toDataURL('image/png'));
+          };
+
+          img.onerror = () => reject(new Error("Impossible de charger l'image."));
+          img.src = dataUrl;
+        });
+      }
+
+      // Upload logo (DataURL) + suppression fond
+      logoFileInput.addEventListener('change', async function(e) {
         const file = e.target.files && e.target.files[0];
         if (!file) return;
 
         const reader = new FileReader();
-        reader.onload = function(event) {
-          setLogoFromDataUrl(event.target.result);
-          alert("✅ Logo téléchargé ! Visible à l'écran et dans le PDF.");
+        reader.onload = async function(event) {
+          try {
+            const originalDataUrl = event.target.result;
+
+            // Si c'est déjà un PNG transparent, on peut tenter quand même (ça ne casse pas)
+            // Tu peux ajuster threshold si besoin : 35-70 selon les logos
+            const cleanedDataUrl = await removeBackgroundFromImage(originalDataUrl, {
+              threshold: 50,
+              softEdge: 25,
+              maxSize: 900
+            });
+
+            setLogoFromDataUrl(cleanedDataUrl);
+            alert("✅ Logo chargé ! Fond supprimé automatiquement (si fond uni).");
+          } catch (err) {
+            // Si le traitement échoue, on affiche l'image originale
+            setLogoFromDataUrl(event.target.result);
+            alert("⚠️ Logo chargé, mais suppression du fond impossible. (Fond complexe ou erreur)");
+          }
         };
         reader.readAsDataURL(file);
       });
@@ -657,7 +752,6 @@
         centerLogo.style.backgroundPosition = "";
         centerLogo.style.backgroundSize = "";
 
-        // remettre une image pour l'écran
         centerLogo.innerHTML = `<img src="${printableLogoDataUrl}" alt="Logo" style="width:300px;height:300px;object-fit:contain;">`;
       }
 
@@ -768,16 +862,12 @@
       // Init
       updateDocument();
 
-      // ✅ Charger automatiquement le PNG par défaut au démarrage
+      // Charger automatiquement le PNG par défaut au démarrage
       setLogoFromUrl(defaultLogoPNG);
 
-      // ✅ Bonus : si le PNG n'existe pas, on garde juste l'écran sans planter
-      // (optionnel, mais utile en dev local)
+      // Alerte si PNG manquant (dev)
       const imgTest = new Image();
-      imgTest.onload = () => {};
-      imgTest.onerror = () => {
-        console.warn("⚠️ caradel-logo.png introuvable. Mets le fichier dans le même dossier que ce HTML.");
-      };
+      imgTest.onerror = () => console.warn("⚠️ caradel-logo.png introuvable. Mets le fichier dans le même dossier que ce HTML.");
       imgTest.src = defaultLogoPNG;
     });
   </script>
