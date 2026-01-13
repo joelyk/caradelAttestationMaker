@@ -6,95 +6,443 @@
     <title>Générateur d'Attestation - CARADEL SARL</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Times New Roman', serif; }
-        body { background-color: #f5f5f5; color: #000; line-height: 1.4; padding: 15px; max-width: 900px; margin: 0 auto; font-size: 13px; }
-        .full-page-watermark {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; opacity: 0.08;
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            font-family: 'Times New Roman', serif; 
         }
-        .watermark-text-style {
-            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="200"><text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle" font-family="Arial" font-size="60" fill="%230d3b66" opacity="0.3" transform="rotate(-45 200 100)">CARADEL SARL</text></svg>');
+        
+        body { 
+            background-color: #f5f5f5; 
+            color: #000; 
+            line-height: 1.4; 
+            padding: 15px; 
+            max-width: 900px; 
+            margin: 0 auto; 
+            font-size: 13px; 
+        }
+        
+        /* Conteneur de l'attestation AVEC filigrane intégré */
+        .document-container {
+            background-color: white;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            position: relative;
+            z-index: 10;
+            min-height: 280mm;
+            page-break-inside: avoid;
+            /* Filigrane par défaut (texte CARADEL SARL) */
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="200"><text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle" font-family="Arial" font-size="60" fill="%230d3b66" opacity="0.08" transform="rotate(-45 200 100)">CARADEL SARL</text></svg>');
             background-repeat: repeat;
+            background-size: 400px 400px;
         }
-        .letterhead { text-align: center; border-bottom: 2px solid #0d3b66; padding-bottom: 10px; margin-bottom: 20px; position: relative; z-index: 10; background-color: white; padding-top: 10px; }
-        .company-name { font-size: 20px; font-weight: bold; color: #0d3b66; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 3px; }
-        .company-tagline { font-size: 11px; font-style: italic; color: #666; margin-bottom: 8px; }
-        .company-details { font-size: 10px; color: #333; display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin-top: 5px; }
-        .document-container { background-color: white; padding: 30px; margin-bottom: 20px; box-shadow: 0 0 10px rgba(0,0,0,0.1); position: relative; z-index: 10; min-height: 280mm; }
-        .content { font-size: 13px; text-align: justify; margin-bottom: 15px; position: relative; z-index: 10; }
-        .attestation-title { text-align: center; font-size: 15px; font-weight: bold; text-transform: uppercase; margin-bottom: 25px; text-decoration: underline; position: relative; z-index: 10; }
-        .section { margin-bottom: 12px; position: relative; z-index: 10; }
-        .employee-info { margin: 15px 0; padding: 12px; background-color: rgba(249,249,249,0.95); border-left: 3px solid #0d3b66; position: relative; z-index: 10; }
-        .info-line { margin-bottom: 4px; }
-        .mission-list { margin: 12px 0 15px 20px; position: relative; z-index: 10; }
-        .mission-list li { margin-bottom: 5px; text-align: justify; }
-        .signature-section { margin-top: 40px; text-align: right; position: relative; z-index: 10; }
-        .signature-line { display: inline-block; width: 220px; border-bottom: 1px solid #000; margin-bottom: 4px; }
-        .date-place { margin-top: 25px; text-align: right; font-style: italic; position: relative; z-index: 10; }
-        .stamp { position: absolute; bottom: 70px; left: 30px; width: 90px; height: 90px; border: 2px dashed #0d3b66; border-radius: 50%; display: flex; align-items: center; justify-content: center; opacity: 0.8; transform: rotate(-15deg); z-index: 10; background-color: white; }
-        .stamp-text { text-align: center; font-weight: bold; color: #0d3b66; font-size: 10px; text-transform: uppercase; padding: 4px; }
-        .controls { background-color: #fff; padding: 15px; border-radius: 6px; margin-bottom: 20px; box-shadow: 0 3px 8px rgba(0,0,0,0.08); position: relative; z-index: 1000; border: 1px solid #ddd; }
-        .logo-control { background-color: #f8f9fa; padding: 12px; border-radius: 4px; margin-bottom: 15px; border-left: 3px solid #0d3b66; }
-        .form-row { display: flex; gap: 10px; margin-bottom: 12px; }
-        .form-col { flex: 1; }
-        .form-group { margin-bottom: 10px; }
-        label { display: block; margin-bottom: 4px; font-weight: bold; color: #0d3b66; font-size: 12px; }
-        input, select, textarea { width: 100%; padding: 7px; border: 1px solid #ddd; border-radius: 3px; font-size: 12px; font-family: inherit; }
-        textarea { min-height: 70px; resize: vertical; }
-        .button-group { display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
-        button { padding: 8px 16px; border: none; border-radius: 3px; font-size: 12px; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all 0.3s ease; flex: 1; }
-        .print-btn { background-color: #0d3b66; color: white; }
-        .print-btn:hover { background-color: #0a2d4d; }
-        .reset-btn { background-color: #666; color: white; }
-        .reset-btn:hover { background-color: #555; }
-        .generate-btn { background-color: #2a9d8f; color: white; }
-        .generate-btn:hover { background-color: #24897c; }
-        .footer { text-align: center; margin-top: 15px; padding-top: 12px; border-top: 1px solid #ddd; color: #666; font-size: 10px; position: relative; z-index: 1000; }
-        .mission-example { font-size: 10px; color: #666; margin-top: 4px; font-style: italic; }
-        .logo-info { font-size: 11px; color: #666; margin-top: 8px; font-style: italic; }
+        
+        /* Style pour quand on met une image en filigrane */
+        .document-container.watermark-image {
+            background-image: var(--watermark-image, none);
+            background-repeat: repeat;
+            background-size: 400px 400px;
+            background-position: center center;
+        }
+        
+        /* Style pour aucun filigrane */
+        .document-container.no-watermark {
+            background-image: none !important;
+        }
+        
+        .letterhead { 
+            text-align: center; 
+            border-bottom: 2px solid #0d3b66; 
+            padding-bottom: 10px; 
+            margin-bottom: 20px; 
+            position: relative; 
+            z-index: 15; 
+            background-color: white; 
+            padding-top: 10px; 
+        }
+        
+        .company-name { 
+            font-size: 20px; 
+            font-weight: bold; 
+            color: #0d3b66; 
+            text-transform: uppercase; 
+            letter-spacing: 1px; 
+            margin-bottom: 3px; 
+        }
+        
+        .company-tagline { 
+            font-size: 11px; 
+            font-style: italic; 
+            color: #666; 
+            margin-bottom: 8px; 
+        }
+        
+        .company-details { 
+            font-size: 10px; 
+            color: #333; 
+            display: flex; 
+            justify-content: center; 
+            flex-wrap: wrap; 
+            gap: 10px; 
+            margin-top: 5px; 
+        }
+        
+        .content { 
+            font-size: 13px; 
+            text-align: justify; 
+            margin-bottom: 15px; 
+            position: relative; 
+            z-index: 15; 
+        }
+        
+        .attestation-title { 
+            text-align: center; 
+            font-size: 15px; 
+            font-weight: bold; 
+            text-transform: uppercase; 
+            margin-bottom: 25px; 
+            text-decoration: underline; 
+            position: relative; 
+            z-index: 15; 
+        }
+        
+        .section { 
+            margin-bottom: 12px; 
+            position: relative; 
+            z-index: 15; 
+        }
+        
+        .employee-info { 
+            margin: 15px 0; 
+            padding: 12px; 
+            background-color: rgba(249,249,249,0.95); 
+            border-left: 3px solid #0d3b66; 
+            position: relative; 
+            z-index: 15; 
+        }
+        
+        .info-line { 
+            margin-bottom: 4px; 
+        }
+        
+        .mission-list { 
+            margin: 12px 0 15px 20px; 
+            position: relative; 
+            z-index: 15; 
+        }
+        
+        .mission-list li { 
+            margin-bottom: 5px; 
+            text-align: justify; 
+        }
+        
+        .signature-section { 
+            margin-top: 40px; 
+            text-align: right; 
+            position: relative; 
+            z-index: 15; 
+        }
+        
+        .signature-line { 
+            display: inline-block; 
+            width: 220px; 
+            border-bottom: 1px solid #000; 
+            margin-bottom: 4px; 
+        }
+        
+        .date-place { 
+            margin-top: 25px; 
+            text-align: right; 
+            font-style: italic; 
+            position: relative; 
+            z-index: 15; 
+        }
+        
+        .stamp { 
+            position: absolute; 
+            bottom: 70px; 
+            left: 30px; 
+            width: 90px; 
+            height: 90px; 
+            border: 2px dashed #0d3b66; 
+            border-radius: 50%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            opacity: 0.8; 
+            transform: rotate(-15deg); 
+            z-index: 15; 
+            background-color: white; 
+        }
+        
+        .stamp-text { 
+            text-align: center; 
+            font-weight: bold; 
+            color: #0d3b66; 
+            font-size: 10px; 
+            text-transform: uppercase; 
+            padding: 4px; 
+        }
+        
+        /* Interface de contrôle */
+        .controls { 
+            background-color: #fff; 
+            padding: 15px; 
+            border-radius: 6px; 
+            margin-bottom: 20px; 
+            box-shadow: 0 3px 8px rgba(0,0,0,0.08); 
+            border: 1px solid #ddd; 
+        }
+        
+        .watermark-control { 
+            background-color: #f8f9fa; 
+            padding: 12px; 
+            border-radius: 4px; 
+            margin-bottom: 15px; 
+            border-left: 3px solid #0d3b66; 
+        }
+        
+        .form-row { 
+            display: flex; 
+            gap: 10px; 
+            margin-bottom: 12px; 
+        }
+        
+        .form-col { 
+            flex: 1; 
+        }
+        
+        .form-group { 
+            margin-bottom: 10px; 
+        }
+        
+        label { 
+            display: block; 
+            margin-bottom: 4px; 
+            font-weight: bold; 
+            color: #0d3b66; 
+            font-size: 12px; 
+        }
+        
+        input, select, textarea { 
+            width: 100%; 
+            padding: 7px; 
+            border: 1px solid #ddd; 
+            border-radius: 3px; 
+            font-size: 12px; 
+            font-family: inherit; 
+        }
+        
+        textarea { 
+            min-height: 70px; 
+            resize: vertical; 
+        }
+        
+        .button-group { 
+            display: flex; 
+            gap: 10px; 
+            margin-top: 12px; 
+            flex-wrap: wrap; 
+        }
+        
+        button { 
+            padding: 8px 16px; 
+            border: none; 
+            border-radius: 3px; 
+            font-size: 12px; 
+            cursor: pointer; 
+            display: flex; 
+            align-items: center; 
+            gap: 6px; 
+            transition: all 0.3s ease; 
+            flex: 1; 
+        }
+        
+        .print-btn { 
+            background-color: #0d3b66; 
+            color: white; 
+        }
+        
+        .print-btn:hover { 
+            background-color: #0a2d4d; 
+        }
+        
+        .reset-btn { 
+            background-color: #666; 
+            color: white; 
+        }
+        
+        .reset-btn:hover { 
+            background-color: #555; 
+        }
+        
+        .generate-btn { 
+            background-color: #2a9d8f; 
+            color: white; 
+        }
+        
+        .generate-btn:hover { 
+            background-color: #24897c; 
+        }
+        
+        .watermark-btn { 
+            background-color: #6c757d; 
+            color: white; 
+            margin-top: 5px; 
+        }
+        
+        .watermark-btn:hover { 
+            background-color: #5a6268; 
+        }
+        
+        .footer { 
+            text-align: center; 
+            margin-top: 15px; 
+            padding-top: 12px; 
+            border-top: 1px solid #ddd; 
+            color: #666; 
+            font-size: 10px; 
+        }
+        
+        .mission-example { 
+            font-size: 10px; 
+            color: #666; 
+            margin-top: 4px; 
+            font-style: italic; 
+        }
+        
+        .watermark-info { 
+            font-size: 11px; 
+            color: #666; 
+            margin-top: 8px; 
+            font-style: italic; 
+        }
+        
+        .watermark-preview { 
+            margin-top: 10px; 
+            padding: 10px; 
+            border: 1px dashed #ddd; 
+            border-radius: 4px; 
+            text-align: center; 
+            background-color: #f9f9f9; 
+            min-height: 60px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+        }
+        
+        .watermark-preview img { 
+            max-width: 100%; 
+            max-height: 50px; 
+            opacity: 0.5; 
+        }
+        
+        /* Ajustements pour l'impression */
         @media print {
-            body { background-color: white; padding: 0; font-size: 12px; margin: 0; }
-            .controls, .footer, button, .full-page-watermark { display: none; }
-            .document-container { box-shadow: none; padding: 25px; min-height: auto; margin: 0; border: none; width: 100%; height: auto; }
-            .letterhead { border-bottom: 2px solid #000; margin-bottom: 15px; padding-bottom: 8px; padding-top: 0; }
-            .document-container::before {
-                content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; opacity: 0.08;
-                background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="300" height="150"><text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle" font-family="Arial" font-size="50" fill="%230d3b66" opacity="0.05" transform="rotate(-45 150 75)">CARADEL SARL</text></svg>');
-                background-repeat: repeat;
+            body { 
+                background-color: white; 
+                padding: 0; 
+                font-size: 12px; 
+                margin: 0; 
             }
-            .employee-info { background-color: rgba(249,249,249,0.98); }
-            .stamp { bottom: 60px; left: 25px; }
+            
+            .controls, .footer, button { 
+                display: none; 
+            }
+            
+            .document-container { 
+                box-shadow: none; 
+                padding: 25px; 
+                min-height: auto; 
+                margin: 0; 
+                border: none; 
+                width: 100%; 
+                height: auto; 
+                /* Le filigrane reste pour l'impression */
+            }
+            
+            .letterhead { 
+                border-bottom: 2px solid #000; 
+                margin-bottom: 15px; 
+                padding-bottom: 8px; 
+                padding-top: 0; 
+            }
+            
+            .employee-info { 
+                background-color: rgba(249,249,249,0.98); 
+            }
+            
+            .stamp { 
+                bottom: 60px; 
+                left: 25px; 
+            }
         }
+        
         @media (max-width: 768px) {
-            body { padding: 10px; }
-            .document-container { padding: 20px; }
-            .form-row { flex-direction: column; gap: 0; }
-            .button-group { flex-direction: column; }
-            button { width: 100%; justify-content: center; }
-            .stamp { position: relative; bottom: auto; left: auto; margin: 20px auto; }
+            body { 
+                padding: 10px; 
+            }
+            
+            .document-container { 
+                padding: 20px; 
+            }
+            
+            .form-row { 
+                flex-direction: column; 
+                gap: 0; 
+            }
+            
+            .button-group { 
+                flex-direction: column; 
+            }
+            
+            button { 
+                width: 100%; 
+                justify-content: center; 
+            }
+            
+            .stamp { 
+                position: relative; 
+                bottom: auto; 
+                left: auto; 
+                margin: 20px auto; 
+            }
         }
     </style>
 </head>
 <body>
-    <!-- Zone du filigrane, contrôlée par JavaScript -->
-    <div class="full-page-watermark" id="watermarkContainer"></div>
-    
+    <!-- Interface de contrôle -->
     <div class="controls">
         <h3><i class="fas fa-edit"></i> Personnaliser l'attestation</h3>
         
-        <!-- SECTION POUR CHOISIR LE FILIGRANE -->
-        <div class="logo-control">
-            <label for="watermarkType">Choisir le type de filigrane</label>
+        <!-- SECTION POUR LE FILIGRANE -->
+        <div class="watermark-control">
+            <label for="watermarkType">📝 FILIGRANE DE L'ATTESTATION</label>
             <select id="watermarkType">
-                <option value="text">Texte "CARADEL SARL" (par défaut)</option>
-                <option value="custom">Logo personnalisé (télécharger)</option>
+                <option value="default">Texte "CARADEL SARL" (par défaut)</option>
+                <option value="custom">Image personnalisée</option>
                 <option value="none">Aucun filigrane</option>
             </select>
-            <div id="customLogoUpload" style="display: none; margin-top: 10px;">
-                <input type="file" id="logoFileInput" accept="image/*">
-                <p class="logo-info">Téléchargez votre logo. Il sera affiché en filigrane.</p>
+            
+            <div id="customImageSection" style="display: none; margin-top: 10px;">
+                <input type="file" id="customImageInput" accept="image/*">
+                <p class="watermark-info">Téléchargez votre logo/image. Il sera répété en arrière-plan de l'attestation.</p>
+                
+                <div class="watermark-preview" id="watermarkPreview">
+                    <span style="color: #666; font-style: italic;">Aperçu du filigrane apparaîtra ici</span>
+                </div>
+                
+                <button class="watermark-btn" id="applyWatermarkBtn">
+                    <i class="fas fa-check"></i> Appliquer ce filigrane
+                </button>
             </div>
+            
+            <p class="watermark-info">Le filigrane apparaît SEULEMENT sur l'attestation, pas sur cette interface.</p>
         </div>
         
+        <!-- Informations du salarié -->
         <div class="form-row">
             <div class="form-col">
                 <div class="form-group">
@@ -129,6 +477,7 @@
             </div>
         </div>
         
+        <!-- Missions -->
         <div class="form-group">
             <label for="missions">Missions (une par ligne, avec • au début)</label>
             <textarea id="missions" class="missions-input">
@@ -140,6 +489,7 @@
             <div class="mission-example">Exemple: • Mission 1 • Mission 2 (une par ligne)</div>
         </div>
         
+        <!-- Boutons -->
         <div class="button-group">
             <button class="generate-btn" id="generateBtn">
                 <i class="fas fa-file-contract"></i> Générer l'attestation
@@ -153,7 +503,7 @@
         </div>
     </div>
     
-    <!-- CONTENU DE L'ATTESTATION -->
+    <!-- ATTESTATION (avec filigrane) -->
     <div class="document-container" id="documentContainer">
         <div class="letterhead">
             <div class="company-name">CARADEL SARL</div>
@@ -244,52 +594,83 @@
             const startDateInput = document.getElementById('startDate');
             const endDateInput = document.getElementById('endDate');
             const missionsInput = document.getElementById('missions');
-            const watermarkContainer = document.getElementById('watermarkContainer');
+            const documentContainer = document.getElementById('documentContainer');
             const watermarkTypeSelect = document.getElementById('watermarkType');
-            const customLogoUploadDiv = document.getElementById('customLogoUpload');
-            const logoFileInput = document.getElementById('logoFileInput');
+            const customImageSection = document.getElementById('customImageSection');
+            const customImageInput = document.getElementById('customImageInput');
+            const watermarkPreview = document.getElementById('watermarkPreview');
+            const applyWatermarkBtn = document.getElementById('applyWatermarkBtn');
+            
+            // Variable pour stocker l'URL de l'image personnalisée
+            let customWatermarkUrl = null;
 
             // 1. GESTION DU FILIGRANE
             function updateWatermark() {
                 const type = watermarkTypeSelect.value;
-                watermarkContainer.className = 'full-page-watermark'; // Réinitialise les classes
-
-                if (type === 'text') {
-                    watermarkContainer.classList.add('watermark-text-style');
-                } else if (type === 'custom') {
-                    // Si un logo a été téléchargé, l'utiliser comme arrière-plan
-                    if (window.currentLogoUrl) {
-                        watermarkContainer.style.backgroundImage = `url('${window.currentLogoUrl}')`;
-                        watermarkContainer.style.backgroundRepeat = 'repeat';
-                        watermarkContainer.style.backgroundSize = '400px 400px';
-                    }
-                } else if (type === 'none') {
-                    watermarkContainer.style.backgroundImage = 'none';
+                
+                // Réinitialise les classes
+                documentContainer.classList.remove('watermark-image', 'no-watermark');
+                
+                if (type === 'default') {
+                    // Filigrane par défaut (texte CARADEL SARL)
+                    documentContainer.style.backgroundImage = 'url(\'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="200"><text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle" font-family="Arial" font-size="60" fill="%230d3b66" opacity="0.08" transform="rotate(-45 200 100)">CARADEL SARL</text></svg>\')';
+                    documentContainer.style.backgroundRepeat = 'repeat';
+                    documentContainer.style.backgroundSize = '400px 400px';
+                } 
+                else if (type === 'custom' && customWatermarkUrl) {
+                    // Filigrane personnalisé (image)
+                    documentContainer.classList.add('watermark-image');
+                    documentContainer.style.setProperty('--watermark-image', `url('${customWatermarkUrl}')`);
+                    documentContainer.style.backgroundImage = `url('${customWatermarkUrl}')`;
+                    documentContainer.style.backgroundRepeat = 'repeat';
+                    documentContainer.style.backgroundSize = '400px 400px';
+                    documentContainer.style.backgroundPosition = 'center center';
+                } 
+                else if (type === 'none') {
+                    // Aucun filigrane
+                    documentContainer.classList.add('no-watermark');
+                    documentContainer.style.backgroundImage = 'none';
                 }
+                
+                console.log('Filigrane mis à jour:', type);
             }
 
-            // Affiche/Masque le champ de téléchargement de logo
+            // Affiche/masque la section pour l'image personnalisée
             watermarkTypeSelect.addEventListener('change', function() {
-                customLogoUploadDiv.style.display = (this.value === 'custom') ? 'block' : 'none';
-                updateWatermark();
+                customImageSection.style.display = (this.value === 'custom') ? 'block' : 'none';
+                if (this.value !== 'custom') {
+                    updateWatermark();
+                }
             });
 
-            // Gère le téléchargement d'un logo personnalisé
-            logoFileInput.addEventListener('change', function(e) {
+            // Prévisualisation de l'image téléchargée
+            customImageInput.addEventListener('change', function(e) {
                 const file = e.target.files[0];
                 if (file) {
                     const reader = new FileReader();
                     reader.onload = function(event) {
-                        window.currentLogoUrl = event.target.result; // Stocke l'URL du logo
-                        updateWatermark(); // Met à jour le filigrane
-                        alert('Logo personnalisé chargé en filigrane !');
+                        customWatermarkUrl = event.target.result;
+                        
+                        // Affiche l'aperçu
+                        watermarkPreview.innerHTML = `<img src="${customWatermarkUrl}" alt="Aperçu du filigrane" style="max-width: 100%; max-height: 50px; opacity: 0.5;">`;
+                        
+                        // Active le bouton "Appliquer"
+                        applyWatermarkBtn.disabled = false;
+                        applyWatermarkBtn.innerHTML = '<i class="fas fa-check"></i> Appliquer ce filigrane';
                     };
                     reader.readAsDataURL(file);
                 }
             });
 
-            // Initialise le filigrane (texte par défaut)
-            updateWatermark();
+            // Applique le filigrane personnalisé
+            applyWatermarkBtn.addEventListener('click', function() {
+                if (customWatermarkUrl) {
+                    updateWatermark();
+                    alert('✅ Filigrane personnalisé appliqué sur l\'attestation !');
+                } else {
+                    alert('Veuillez d\'abord sélectionner une image.');
+                }
+            });
 
             // 2. MISE À JOUR DU CONTENU DE L'ATTESTATION
             function updateDocument() {
@@ -313,7 +694,9 @@
                 lines.forEach(line => {
                     let cleanLine = line.trim();
                     if (cleanLine) {
-                        if (!cleanLine.startsWith('•') && !cleanLine.startsWith('-')) cleanLine = '• ' + cleanLine;
+                        if (!cleanLine.startsWith('•') && !cleanLine.startsWith('-')) {
+                            cleanLine = '• ' + cleanLine;
+                        }
                         missionsHTML += `<li>${cleanLine.replace(/^[•\-]\s*/, '')}</li>`;
                     }
                 });
@@ -327,7 +710,9 @@
                 document.getElementById('civilite').textContent = civilite;
                 document.getElementById('civilite2').textContent = civilite;
                 document.getElementById('pronoun').textContent = pronom;
-                document.querySelectorAll('#feminineE, #feminineE2, #feminineE3').forEach(el => el.textContent = participe);
+                document.querySelectorAll('#feminineE, #feminineE2, #feminineE3').forEach(el => {
+                    el.textContent = participe;
+                });
             }
 
             // 3. ÉCOUTEURS D'ÉVÉNEMENTS POUR LA MISE À JOUR EN TEMPS RÉEL
@@ -344,10 +729,11 @@
                     return;
                 }
                 updateDocument();
-                alert('Attestation générée avec succès ! Prête à imprimer.');
+                alert('✅ Attestation générée avec succès ! Prête à imprimer.');
             });
 
             document.getElementById('resetBtn').addEventListener('click', function() {
+                // Réinitialise les informations du salarié
                 employeeNameInput.value = 'NTOUOHOU MAXIME GÉRARD';
                 birthDateInput.value = '23/02/1999';
                 posteInput.value = 'PLOMBIER';
@@ -359,12 +745,17 @@
 • Détection et réparation des fuites
 • Pose d'équipements sanitaires
 • Respect des normes de sécurité et de qualité`;
-                watermarkTypeSelect.value = 'text';
-                customLogoUploadDiv.style.display = 'none';
-                logoFileInput.value = '';
+                
+                // Réinitialise le filigrane
+                watermarkTypeSelect.value = 'default';
+                customImageSection.style.display = 'none';
+                customImageInput.value = '';
+                customWatermarkUrl = null;
+                watermarkPreview.innerHTML = '<span style="color: #666; font-style: italic;">Aperçu du filigrane apparaîtra ici</span>';
+                
                 updateWatermark();
                 updateDocument();
-                alert('Formulaire réinitialisé avec succès !');
+                alert('✅ Formulaire réinitialisé avec succès ! Filigrane remis par défaut.');
             });
 
             document.getElementById('printBtn').addEventListener('click', function() {
@@ -377,6 +768,7 @@
 
             // Initialisation
             updateDocument();
+            updateWatermark(); // Applique le filigrane par défaut au chargement
         });
     </script>
 </body>
