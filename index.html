@@ -7,91 +7,43 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <style>
-    *{
-      margin:0;
-      padding:0;
-      box-sizing:border-box;
-      font-family:"Times New Roman", serif;
-    }
+    *{ margin:0; padding:0; box-sizing:border-box; font-family:"Times New Roman", serif; }
 
     body{
-      background-color:#f5f5f5;
-      color:#000;
-      line-height:1.4;
-      padding:15px;
-      max-width:900px;
-      margin:0 auto;
-      font-size:13px;
+      background-color:#f5f5f5; color:#000; line-height:1.4;
+      padding:15px; max-width:900px; margin:0 auto; font-size:13px;
     }
 
-    /* Interface de contrôle */
     .controls{
-      background-color:#fff;
-      padding:15px;
-      border-radius:6px;
-      margin-bottom:20px;
-      box-shadow:0 3px 8px rgba(0,0,0,0.08);
-      border:1px solid #ddd;
+      background-color:#fff; padding:15px; border-radius:6px; margin-bottom:20px;
+      box-shadow:0 3px 8px rgba(0,0,0,0.08); border:1px solid #ddd;
     }
 
     .logo-control{
-      background-color:#f8f9fa;
-      padding:12px;
-      border-radius:4px;
-      margin-bottom:15px;
+      background-color:#f8f9fa; padding:12px; border-radius:4px; margin-bottom:15px;
       border-left:3px solid #0d3b66;
     }
 
-    .form-row{
-      display:flex;
-      gap:10px;
-      margin-bottom:12px;
-    }
-
+    .form-row{ display:flex; gap:10px; margin-bottom:12px; }
     .form-col{ flex:1; }
-
     .form-group{ margin-bottom:10px; }
 
     label{
-      display:block;
-      margin-bottom:4px;
-      font-weight:bold;
-      color:#0d3b66;
-      font-size:12px;
+      display:block; margin-bottom:4px; font-weight:bold; color:#0d3b66; font-size:12px;
     }
 
     input, select, textarea{
-      width:100%;
-      padding:7px;
-      border:1px solid #ddd;
-      border-radius:3px;
-      font-size:12px;
-      font-family:inherit;
+      width:100%; padding:7px; border:1px solid #ddd; border-radius:3px;
+      font-size:12px; font-family:inherit;
     }
 
-    textarea{
-      min-height:70px;
-      resize:vertical;
-    }
+    textarea{ min-height:70px; resize:vertical; }
 
-    .button-group{
-      display:flex;
-      gap:10px;
-      margin-top:12px;
-      flex-wrap:wrap;
-    }
+    .button-group{ display:flex; gap:10px; margin-top:12px; flex-wrap:wrap; }
 
     button{
-      padding:8px 16px;
-      border:none;
-      border-radius:3px;
-      font-size:12px;
-      cursor:pointer;
-      display:flex;
-      align-items:center;
-      gap:6px;
-      transition:all .3s ease;
-      flex:1;
+      padding:8px 16px; border:none; border-radius:3px; font-size:12px;
+      cursor:pointer; display:flex; align-items:center; gap:6px; transition:all .3s ease; flex:1;
     }
 
     .print-btn{ background:#0d3b66; color:#fff; }
@@ -102,250 +54,109 @@
     .generate-btn:hover{ background:#24897c; }
 
     .footer{
-      text-align:center;
-      margin-top:15px;
-      padding-top:12px;
-      border-top:1px solid #ddd;
-      color:#666;
-      font-size:10px;
+      text-align:center; margin-top:15px; padding-top:12px; border-top:1px solid #ddd;
+      color:#666; font-size:10px;
     }
 
-    .mission-example{
-      font-size:10px;
-      color:#666;
-      margin-top:4px;
-      font-style:italic;
-    }
+    .mission-example{ font-size:10px; color:#666; margin-top:4px; font-style:italic; }
+    .logo-info{ font-size:11px; color:#666; margin-top:8px; font-style:italic; }
 
-    .logo-info{
-      font-size:11px;
-      color:#666;
-      margin-top:8px;
-      font-style:italic;
-    }
-
-    /* ATTESTATION - A4 */
     .document-container{
-      background:#fff;
-      padding:30px;
-      margin-bottom:20px;
+      background:#fff; padding:30px; margin-bottom:20px;
       box-shadow:0 0 10px rgba(0,0,0,0.1);
-      position:relative;
-      min-height:280mm;
-      page-break-inside:avoid;
-      width:210mm;
-      margin-left:auto;
-      margin-right:auto;
+      position:relative; min-height:280mm; page-break-inside:avoid;
+      width:210mm; margin-left:auto; margin-right:auto;
     }
 
-    /* LOGO CENTRAL (filigrane) */
     .center-logo{
-      position:absolute;
-      top:50%;
-      left:50%;
-      transform:translate(-50%, -50%);
-      z-index:1;
-      opacity:0.15;
-      pointer-events:none;
-      text-align:center;
-      width:300px;
-      height:300px;
+      position:absolute; top:50%; left:50%; transform:translate(-50%, -50%);
+      z-index:1; opacity:0.15; pointer-events:none; text-align:center;
+      width:300px; height:300px;
     }
-    .center-logo img{
-      width:300px;
-      height:300px;
-      object-fit:contain;
-      display:block;
-    }
+    .center-logo img{ width:300px; height:300px; object-fit:contain; display:block; }
 
     .letterhead{
-      text-align:center;
-      border-bottom:2px solid #0d3b66;
-      padding-bottom:10px;
-      margin-bottom:20px;
-      position:relative;
-      z-index:10;
-      background:#fff;
-      padding-top:10px;
+      text-align:center; border-bottom:2px solid #0d3b66; padding-bottom:10px; margin-bottom:20px;
+      position:relative; z-index:10; background:#fff; padding-top:10px;
     }
 
     .company-name{
-      font-size:20px;
-      font-weight:bold;
-      color:#0d3b66;
-      text-transform:uppercase;
-      letter-spacing:1px;
-      margin-bottom:3px;
+      font-size:20px; font-weight:bold; color:#0d3b66; text-transform:uppercase;
+      letter-spacing:1px; margin-bottom:3px;
     }
 
-    .company-tagline{
-      font-size:11px;
-      font-style:italic;
-      color:#666;
-      margin-bottom:8px;
-    }
+    .company-tagline{ font-size:11px; font-style:italic; color:#666; margin-bottom:8px; }
 
     .company-details{
-      font-size:10px;
-      color:#333;
-      display:flex;
-      justify-content:center;
-      flex-wrap:wrap;
-      gap:10px;
-      margin-top:5px;
+      font-size:10px; color:#333; display:flex; justify-content:center; flex-wrap:wrap;
+      gap:10px; margin-top:5px;
     }
 
-    .content{
-      font-size:13px;
-      text-align:justify;
-      margin-bottom:15px;
-      position:relative;
-      z-index:10;
-    }
+    .content{ font-size:13px; text-align:justify; margin-bottom:15px; position:relative; z-index:10; }
 
     .attestation-title{
-      text-align:center;
-      font-size:15px;
-      font-weight:bold;
-      text-transform:uppercase;
-      margin-bottom:25px;
-      text-decoration:underline;
-      position:relative;
-      z-index:10;
+      text-align:center; font-size:15px; font-weight:bold; text-transform:uppercase;
+      margin-bottom:25px; text-decoration:underline; position:relative; z-index:10;
     }
 
-    .section{
-      margin-bottom:12px;
-      position:relative;
-      z-index:10;
-    }
+    .section{ margin-bottom:12px; position:relative; z-index:10; }
 
     .employee-info{
-      margin:15px 0;
-      padding:12px;
-      background:rgba(249,249,249,0.95);
-      border-left:3px solid #0d3b66;
-      position:relative;
-      z-index:10;
+      margin:15px 0; padding:12px; background:rgba(249,249,249,0.95);
+      border-left:3px solid #0d3b66; position:relative; z-index:10;
     }
 
     .info-line{ margin-bottom:4px; }
 
-    .mission-list{
-      margin:12px 0 15px 20px;
-      position:relative;
-      z-index:10;
-    }
+    .mission-list{ margin:12px 0 15px 20px; position:relative; z-index:10; }
+    .mission-list li{ margin-bottom:5px; text-align:justify; }
 
-    .mission-list li{
-      margin-bottom:5px;
-      text-align:justify;
-    }
+    .signature-section{ margin-top:40px; text-align:right; position:relative; z-index:10; }
 
-    .signature-section{
-      margin-top:40px;
-      text-align:right;
-      position:relative;
-      z-index:10;
-    }
+    .signature-line{ display:inline-block; width:220px; border-bottom:1px solid #000; margin-bottom:4px; }
 
-    .signature-line{
-      display:inline-block;
-      width:220px;
-      border-bottom:1px solid #000;
-      margin-bottom:4px;
-    }
-
-    .date-place{
-      margin-top:25px;
-      text-align:right;
-      font-style:italic;
-      position:relative;
-      z-index:10;
-    }
+    .date-place{ margin-top:25px; text-align:right; font-style:italic; position:relative; z-index:10; }
 
     .stamp{
-      position:absolute;
-      bottom:70px;
-      left:30px;
-      width:90px;
-      height:90px;
-      border:2px dashed #0d3b66;
-      border-radius:50%;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      opacity:.8;
-      transform:rotate(-15deg);
-      z-index:10;
-      background:#fff;
+      position:absolute; bottom:70px; left:30px; width:90px; height:90px;
+      border:2px dashed #0d3b66; border-radius:50%;
+      display:flex; align-items:center; justify-content:center;
+      opacity:.8; transform:rotate(-15deg); z-index:10; background:#fff;
     }
 
     .stamp-text{
-      text-align:center;
-      font-weight:bold;
-      color:#0d3b66;
-      font-size:10px;
-      text-transform:uppercase;
-      padding:4px;
+      text-align:center; font-weight:bold; color:#0d3b66; font-size:10px;
+      text-transform:uppercase; padding:4px;
     }
 
-    /* RÈGLES D'IMPRESSION */
     @media print{
-      /* Important : forcer l'impression des couleurs & backgrounds */
-      *{
-        -webkit-print-color-adjust:exact !important;
-        print-color-adjust:exact !important;
-      }
-
+      *{ -webkit-print-color-adjust:exact !important; print-color-adjust:exact !important; }
       .controls, .footer, button{ display:none !important; }
 
       body{
-        background:#fff !important;
-        padding:0 !important;
-        margin:0 !important;
-        width:210mm !important;
-        font-size:12px !important;
+        background:#fff !important; padding:0 !important; margin:0 !important;
+        width:210mm !important; font-size:12px !important;
       }
 
       .document-container{
-        box-shadow:none !important;
-        padding:25px !important;
-        margin:0 auto !important;
-        border:none !important;
-        width:210mm !important;
-        height:297mm !important;
-        min-height:297mm !important;
-        position:relative !important;
-        display:block !important;
+        box-shadow:none !important; padding:25px !important; margin:0 auto !important;
+        border:none !important; width:210mm !important; height:297mm !important;
+        min-height:297mm !important; position:relative !important; display:block !important;
         page-break-after:always;
       }
 
-      /* logo filigrane : on force l'affichage */
-      .center-logo{
-        display:block !important;
-        visibility:visible !important;
-        opacity:0.12 !important;
-        z-index:1 !important;
-      }
+      .center-logo{ display:block !important; visibility:visible !important; opacity:0.12 !important; z-index:1 !important; }
 
       .letterhead{
-        border-bottom:2px solid #000 !important;
-        margin-bottom:15px !important;
-        padding-bottom:8px !important;
-        padding-top:0 !important;
+        border-bottom:2px solid #000 !important; margin-bottom:15px !important;
+        padding-bottom:8px !important; padding-top:0 !important;
       }
 
       .employee-info{ background:rgba(249,249,249,0.98) !important; }
 
-      .stamp{
-        bottom:60px !important;
-        left:25px !important;
-      }
+      .stamp{ bottom:60px !important; left:25px !important; }
 
-      .section, .employee-info, .mission-list{
-        page-break-inside:avoid !important;
-      }
+      .section, .employee-info, .mission-list{ page-break-inside:avoid !important; }
     }
 
     @media (max-width:768px){
@@ -354,33 +165,63 @@
       .form-row{ flex-direction:column; gap:0; }
       .button-group{ flex-direction:column; }
       button{ width:100%; justify-content:center; }
-      .stamp{
-        position:relative;
-        bottom:auto;
-        left:auto;
-        margin:20px auto;
-      }
+      .stamp{ position:relative; bottom:auto; left:auto; margin:20px auto; }
       .center-logo{ width:200px; height:200px; }
       .center-logo img{ width:200px; height:200px; }
     }
+
+    /* petit style pour le bloc select logo */
+    .logo-picker-row{
+      display:flex;
+      gap:10px;
+      align-items:end;
+      flex-wrap:wrap;
+      margin-top:10px;
+    }
+    .logo-picker-row .form-group{ flex: 2; margin-bottom:0; }
+    .logo-picker-row .mini-btn{ flex: 1; }
   </style>
 </head>
 
 <body>
-  <!-- Interface de contrôle -->
   <div class="controls">
     <h3><i class="fas fa-edit"></i> Personnaliser l'attestation</h3>
 
-    <!-- SECTION POUR LE LOGO -->
     <div class="logo-control">
-      <label for="logoFile">🖼️ LOGO CENTRAL DANS L'ATTESTATION</label>
-      <input type="file" id="logoFile" accept="image/*">
-      <p class="logo-info"><strong>IMPORTANT :</strong> Si tu charges une image, le code essaie automatiquement de rendre le fond transparent.</p>
-      <p class="logo-info">Formats acceptés : PNG, JPG, SVG. Taille recommandée : 300x300 pixels.</p>
+      <label>🖼️ LOGO CENTRAL DANS L'ATTESTATION</label>
 
-      <div style="margin-top:10px; display:flex; gap:10px;">
+      <!-- 1) Upload local -->
+      <div class="form-group">
+        <label for="logoFile">Parcourir mon PC (upload) — fond retiré si possible</label>
+        <input type="file" id="logoFile" accept="image/*">
+        <p class="logo-info">
+          Si tu charges une image (JPG/PNG), le code essaie de supprimer le fond automatiquement (surtout si fond uni).
+        </p>
+      </div>
+
+      <!-- 2) Choix dans le dossier (liste définie) -->
+      <div class="logo-picker-row">
+        <div class="form-group">
+          <label for="folderLogoSelect">Choisir une image déjà dans le même dossier (liste)</label>
+          <select id="folderLogoSelect">
+            <option value="caradel-logo.png">caradel-logo.png (par défaut)</option>
+            <!-- Ajoute ici les autres fichiers existants dans le dossier -->
+            <option value="logo-2.png">logo-2.png</option>
+            <option value="logo-3.jpg">logo-3.jpg</option>
+            <option value="logo-4.jpeg">logo-4.jpeg</option>
+          </select>
+          <p class="logo-info">
+            ⚠️ Le navigateur ne peut pas “voir” tout le dossier : il faut écrire les noms ici (comme ci-dessus).
+          </p>
+        </div>
+        <button class="mini-btn" id="applyFolderLogoBtn" style="background-color:#0d3b66; color:white;">
+          <i class="fas fa-folder-open"></i> Utiliser
+        </button>
+      </div>
+
+      <div style="margin-top:10px; display:flex; gap:10px; flex-wrap:wrap;">
         <button id="testLogoBtn" style="background-color:#6c757d;">
-          <i class="fas fa-image"></i> Afficher logo CARADEL (PNG)
+          <i class="fas fa-image"></i> Logo par défaut (caradel-logo.png)
         </button>
         <button id="removeLogoBtn" style="background-color:#dc3545;">
           <i class="fas fa-times"></i> Cacher le logo
@@ -449,7 +290,6 @@
       <div class="mission-example">Exemple: • Mission 1 • Mission 2 (une par ligne)</div>
     </div>
 
-    <!-- Boutons -->
     <div class="button-group">
       <button class="generate-btn" id="generateBtn">
         <i class="fas fa-file-contract"></i> Générer l'attestation
@@ -465,10 +305,8 @@
 
   <!-- ATTESTATION -->
   <div class="document-container" id="documentContainer">
-    <!-- LOGO CENTRAL -->
     <div class="center-logo" id="centerLogo"></div>
 
-    <!-- Contenu -->
     <div class="letterhead">
       <div class="company-name">CARADEL SARL</div>
       <div class="company-tagline">Une Entreprise au service de tous</div>
@@ -559,7 +397,6 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      // Date auto
       const now = new Date();
       const options = { day: 'numeric', month: 'long', year: 'numeric' };
       document.getElementById('currentDate').textContent = now.toLocaleDateString('fr-FR', options);
@@ -581,7 +418,11 @@
       const removeLogoBtn = document.getElementById('removeLogoBtn');
       const printBtn = document.getElementById('printBtn');
 
-      // ✅ LOGO PNG PAR DÉFAUT (mets caradel-logo.png dans le même dossier que ce HTML)
+      // ✅ Choix dossier (liste)
+      const folderLogoSelect = document.getElementById('folderLogoSelect');
+      const applyFolderLogoBtn = document.getElementById('applyFolderLogoBtn');
+
+      // Logo par défaut (même dossier)
       const defaultLogoPNG = "caradel-logo.png";
 
       // --- LOGO PRINT SAFE ---
@@ -605,25 +446,14 @@
         logoFileInput.value = '';
       }
 
-      /* =========================================================
-         ✅ SUPPRESSION SIMPLE DU FOND (AUTO)
-         - détecte une couleur de fond en moyennant les 4 coins
-         - rend transparents les pixels proches de cette couleur
-         - marche bien pour fond uni (noir/blanc/gris etc.)
-      ========================================================= */
+      // --- Suppression simple du fond (fond uni) ---
       function removeBackgroundFromImage(dataUrl, opts = {}) {
-        const {
-          threshold = 45,     // tolérance (augmente si fond pas bien enlevé)
-          softEdge = 25,      // adoucit les bords (anti-crénelage)
-          maxSize = 900       // limite pour perf
-        } = opts;
+        const { threshold = 50, softEdge = 25, maxSize = 900 } = opts;
 
         return new Promise((resolve, reject) => {
           const img = new Image();
           img.onload = () => {
-            // Redimensionner si très grande image (perf)
-            let w = img.width;
-            let h = img.height;
+            let w = img.width, h = img.height;
             if (Math.max(w, h) > maxSize) {
               const scale = maxSize / Math.max(w, h);
               w = Math.round(w * scale);
@@ -639,10 +469,9 @@
             const imageData = ctx.getImageData(0, 0, w, h);
             const data = imageData.data;
 
-            // Moyenne des 4 coins (couleur de fond estimée)
             function getPixel(x, y) {
               const i = (y * w + x) * 4;
-              return [data[i], data[i+1], data[i+2], data[i+3]];
+              return [data[i], data[i+1], data[i+2]];
             }
 
             const corners = [
@@ -659,25 +488,19 @@
 
             const [bgR, bgG, bgB] = bg;
 
-            // Enlever le fond
             for (let i = 0; i < data.length; i += 4) {
               const r = data[i], g = data[i+1], b = data[i+2];
               const dr = r - bgR, dg = g - bgG, db = b - bgB;
               const dist = Math.sqrt(dr*dr + dg*dg + db*db);
 
-              if (dist <= threshold) {
-                // Transparent complet
-                data[i+3] = 0;
-              } else if (dist <= threshold + softEdge) {
-                // Dégradé pour bord plus propre
-                const t = (dist - threshold) / softEdge; // 0..1
+              if (dist <= threshold) data[i+3] = 0;
+              else if (dist <= threshold + softEdge) {
+                const t = (dist - threshold) / softEdge;
                 data[i+3] = Math.round(255 * t);
               }
             }
 
             ctx.putImageData(imageData, 0, 0);
-
-            // Toujours sortir en PNG (garde transparence)
             resolve(canvas.toDataURL('image/png'));
           };
 
@@ -686,48 +509,46 @@
         });
       }
 
-      // Upload logo (DataURL) + suppression fond
-      logoFileInput.addEventListener('change', async function(e) {
+      // Upload logo (local) + suppression fond
+      logoFileInput.addEventListener('change', function(e) {
         const file = e.target.files && e.target.files[0];
         if (!file) return;
 
         const reader = new FileReader();
         reader.onload = async function(event) {
           try {
-            const originalDataUrl = event.target.result;
-
-            // Si c'est déjà un PNG transparent, on peut tenter quand même (ça ne casse pas)
-            // Tu peux ajuster threshold si besoin : 35-70 selon les logos
-            const cleanedDataUrl = await removeBackgroundFromImage(originalDataUrl, {
-              threshold: 50,
-              softEdge: 25,
-              maxSize: 900
-            });
-
-            setLogoFromDataUrl(cleanedDataUrl);
+            const original = event.target.result;
+            const cleaned = await removeBackgroundFromImage(original, { threshold: 50, softEdge: 25, maxSize: 900 });
+            setLogoFromDataUrl(cleaned);
             alert("✅ Logo chargé ! Fond supprimé automatiquement (si fond uni).");
           } catch (err) {
-            // Si le traitement échoue, on affiche l'image originale
             setLogoFromDataUrl(event.target.result);
-            alert("⚠️ Logo chargé, mais suppression du fond impossible. (Fond complexe ou erreur)");
+            alert("⚠️ Logo chargé, mais suppression du fond impossible (fond complexe).");
           }
         };
         reader.readAsDataURL(file);
       });
 
-      // Show default PNG logo button
+      // Bouton : Logo par défaut
       testLogoBtn.addEventListener('click', function() {
         setLogoFromUrl(defaultLogoPNG);
-        alert("✅ Logo CARADEL (caradel-logo.png) affiché ! Visible à l'écran et dans le PDF.");
+        alert("✅ Logo CARADEL affiché !");
       });
 
-      // Hide logo
+      // Bouton : appliquer logo depuis la liste du dossier
+      applyFolderLogoBtn.addEventListener('click', function() {
+        const chosen = folderLogoSelect.value;
+        setLogoFromUrl(chosen);
+        alert("✅ Logo du dossier appliqué : " + chosen);
+      });
+
+      // Cacher
       removeLogoBtn.addEventListener('click', function() {
         hideLogo();
         alert("✅ Logo caché !");
       });
 
-      // Convert logo to background before print (more reliable in PDFs)
+      // Impression : passer en background-image
       function applyPrintLogoBackground() {
         if (!printableLogoDataUrl) return;
 
@@ -763,36 +584,29 @@
         const genre = genreInput.value;
         const isFemme = genre === 'femme';
 
-        // Nom
         document.querySelectorAll('#displayName, #displayName2').forEach(el => {
           el.textContent = employeeNameInput.value || 'NTOUOHOU MAXIME GÉRARD';
         });
 
-        // Dates et poste
         document.getElementById('displayBirthDate').textContent = birthDateInput.value || '23/02/1999';
         document.getElementById('displayPoste').textContent = posteInput.value || 'PLOMBIER';
         document.getElementById('displayStartDate').textContent = startDateInput.value || '01 mars 2020';
         document.getElementById('displayEndDate').textContent = endDateInput.value || '31 mai 2025';
 
-        // Temps de travail
         document.getElementById('displayWorkingTime').textContent =
           workingTimeInput.value || 'huit (08) heures par jour, soit quarante (40) heures par semaine';
 
-        // Missions
         const lines = missionsInput.value.split('\n');
         let missionsHTML = '';
         lines.forEach(line => {
           let cleanLine = line.trim();
           if (cleanLine) {
-            if (!cleanLine.startsWith('•') && !cleanLine.startsWith('-')) {
-              cleanLine = '• ' + cleanLine;
-            }
+            if (!cleanLine.startsWith('•') && !cleanLine.startsWith('-')) cleanLine = '• ' + cleanLine;
             missionsHTML += `<li>${cleanLine.replace(/^[•\\-]\\s*/, '')}</li>`;
           }
         });
         document.getElementById('displayMissions').innerHTML = missionsHTML || '<li>Aucune mission spécifiée</li>';
 
-        // Genre
         const civilite = isFemme ? 'Madame' : 'Monsieur';
         const participe = isFemme ? 'e' : '';
         const pronom = isFemme ? 'elle' : 'il';
@@ -805,7 +619,6 @@
         });
       }
 
-      // Events live
       [employeeNameInput, birthDateInput, posteInput, startDateInput, endDateInput].forEach(input => {
         input.addEventListener('input', updateDocument);
       });
@@ -813,7 +626,6 @@
       missionsInput.addEventListener('input', updateDocument);
       workingTimeInput.addEventListener('input', updateDocument);
 
-      // Buttons
       document.getElementById('generateBtn').addEventListener('click', function() {
         if (!employeeNameInput.value || !birthDateInput.value || !posteInput.value || !startDateInput.value || !endDateInput.value || !workingTimeInput.value) {
           alert('Veuillez remplir tous les champs obligatoires (*)');
@@ -838,34 +650,30 @@
 • Respect des normes de sécurité et de qualité`;
 
         logoFileInput.value = '';
+        folderLogoSelect.value = defaultLogoPNG;
         setLogoFromUrl(defaultLogoPNG);
 
         updateDocument();
-        alert('✅ Formulaire réinitialisé ! Logo CARADEL (PNG) restauré.');
+        alert('✅ Formulaire réinitialisé !');
       });
 
-      // Print / PDF
-      printBtn.addEventListener('click', function() {
+      document.getElementById('printBtn').addEventListener('click', function() {
         if (!employeeNameInput.value || !birthDateInput.value) {
           alert("Veuillez d'abord générer l'attestation");
           return;
         }
-
         if (printableLogoDataUrl) {
           centerLogo.style.display = "block";
           centerLogo.style.visibility = "visible";
         }
-
         setTimeout(() => window.print(), 150);
       });
 
       // Init
       updateDocument();
-
-      // Charger automatiquement le PNG par défaut au démarrage
       setLogoFromUrl(defaultLogoPNG);
 
-      // Alerte si PNG manquant (dev)
+      // info si le fichier par défaut manque
       const imgTest = new Image();
       imgTest.onerror = () => console.warn("⚠️ caradel-logo.png introuvable. Mets le fichier dans le même dossier que ce HTML.");
       imgTest.src = defaultLogoPNG;
